@@ -1,0 +1,45 @@
+selectors:
+  regions:
+    - us-east-1
+  images:
+    us-east-1:
+      - id: ami-0145d268
+        name: Default Ubuntu 12.04
+  flavors:
+    - m1.small
+    - m1.medium
+    - m1.large
+    - m1.xlarge
+  groups:
+    - default
+  keypairs:
+    - default
+
+# only use this if you want to override
+# the connection information that is set
+# in config.yml
+# used when you have multiple cloud accounts
+#connect:
+#  fog:
+#    aws_access_key_id: key
+#    aws_secret_access_key: secret
+#    provider: AWS
+
+compute:
+  # defaults for all computes
+  fog:
+    region: us-east-1
+  flavor: m1.large
+  region: us-east-1
+  groups:
+    - default
+  keypair: default
+  image: ami-0145d268 # make sure this is an image in the region specified to fog.
+  # userdata package to use
+  userdata: chef
+
+balancer:
+  something: true
+
+dns:
+  zone: sub.domain.com

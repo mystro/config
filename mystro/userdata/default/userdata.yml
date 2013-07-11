@@ -1,0 +1,22 @@
+erb: userdata.sh.erb
+repositories:
+  - ppa:brightbox/ruby-ng-experimental
+dependencies:
+  - build-essential
+  - wget
+  - curl
+  - ssl-cert
+  - ruby1.9.3
+  - ruby1.9.1-dev
+  - rubygems
+  - ruby-switch
+  - libopenssl-ruby1.9.1
+  - rdoc1.9.1
+  - ri1.9.1
+  - irb1.9.1
+  - libxml2-dev
+  - libxslt1-dev
+  - python-software-properties
+gems:
+  - rake
+  - bundler

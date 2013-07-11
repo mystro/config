@@ -1,0 +1,6 @@
+publisher :amazons3,
+  :aws_secret_access_key => "secret",
+  :aws_access_key_id => "key",
+  :bucket => "bucket"
+
+log :debug, "logs/volley.log"

@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e -x
+exec > ~/userdata.log 2>&1
+export DEBIAN_FRONTEND=noninteractive
+<% @repositories.each do |repo| %>
+apt-add-repository -y <%= repo %>
+<% end %>
+
+apt-get update
+apt-get -y install <%= @dependencies.join(' ') %>
+
+# set up hostname
+hostname <%= @name %>
+echo "<%= @name %>" > /etc/hostname
+echo "127.0.0.1 <%= @name %> <%= @nickame %> <%= @name.split('.')[0] %> # entered by userdata script" >> /etc/hosts
+
+gem install rubygems-update -v1.8.25 --no-ri --no-rdoc
+update_rubygems
+
+<% @gems.each do |gemstring|; (gem, ver) = gemstring.split(" ") %>
+gem install <%= gem %> <%= "-v#{ver}" if ver %> --no-ri --no-rdoc
+<% end %>
+
+cat <<FACTS > /etc/mystro.yml
+name: <%= @name %>
+roles: <%= @roles.join(",") %>
+environment: <%= @environment %>
+account: <%= @account %>
+FACTS
+
+<% @files.each do |file|; local = file["local"]; remote = file["remote"] %>
+cat << <%= local.upcase %> > <%= remote %>
+<%= File.open("#@directory/#{local}").read %>
+<%= local.upcase %>
+<% end %>

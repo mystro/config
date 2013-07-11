@@ -1,0 +1,45 @@
+server: mystro.domain.com
+token: usertoken
+
+#local dev environment
+#server: localhost:3000
+#token: usertoken
+
+# the account to use if one is not specified
+default_account: default
+
+# uncomment this and specify the accounts you want to support
+# all others will be filtered from use.
+#:accounts:
+#  - default
+#  - production
+
+ssh:
+  # user to connect as, when ssh'ing to server
+  # AWS defaults to the user "ubuntu"
+  user: ubuntu
+
+logging:
+  - ["debug", "log/mystro.log"]
+
+workers: true
+
+# connection defaults
+connect:
+  fog:
+    provider: AWS
+    aws_access_key_id: AKIAXXXXXXXXXXXXXXXX
+    aws_secret_access_key: key hash
+
+# plugins
+plugins:
+#  chef:
+#    knife: config/chef/knife.rb
+
+  #puppet:
+    #TODO: Figure out the same thing for puppet
+
+#  scout:
+#    account: accountname
+#    email:   your@email.com
+#    secret:  password

@@ -1,0 +1,76 @@
+#!/bin/bash
+set -e -x
+exec > ~/userdata.log 2>&1
+export DEBIAN_FRONTEND=noninteractive
+<% @repositories.each do |repo| %>
+apt-add-repository -y <%= repo %>
+<% end %>
+
+apt-get update
+apt-get -y install python-software-properties libxml2-dev libxslt1-dev
+apt-get -y install <%= @dependencies.join(' ') %>
+mkdir -p /var/log/chef
+mkdir -p /var/backups/chef
+mkdir -p /var/run/chef
+mkdir -p /var/cache/chef
+mkdir -p /var/lib/chef
+mkdir -p /etc/chef
+
+# set up hostname
+hostname <%= @name %>
+echo "<%= @name %>" > /etc/hostname
+echo "127.0.0.1 <%= @name %> <%= @nickname %> <%= @name.split('.')[0] %> # entered by userdata script" >> /etc/hosts
+
+gem install rubygems-update -v1.8.25 --no-ri --no-rdoc
+update_rubygems
+
+<% @gems.each do |gemstring|; (gem, ver) = gemstring.split(" ") %>
+gem install <%= gem %> <%= "-v#{ver}" if ver %> --no-ri --no-rdoc
+<% end %>
+
+cat <<FACTS > /etc/mystro.yml
+name: <%= @nickname %>
+roles: <%= @roles.join(",") %>
+environment: <%= @environment %>
+account: <%= @account %>
+FACTS
+
+cat <<JSON > /etc/chef/bootstrap.json
+{
+    "run_list": [
+        <%= @roles.map {|e| "\"role[#{e}]\""}.join(",") %>
+    ]
+}
+JSON
+
+cat <<CLIENT > /etc/chef/client.rb
+log_level               :info
+log_location            "/var/log/chef/client.log"
+ssl_verify_mode         :verify_none
+validation_client_name  "chef-validator"
+validation_key          "/etc/chef/validation.pem"
+client_key              "/etc/chef/client.pem"
+chef_server_url         "http://chef.domain.com:4000";
+file_cache_path         "/var/cache/chef"
+file_backup_path        "/var/backups/chef"
+pid_file                "/var/run/chef/client.pid"
+node_name               "<%= @name %>";
+Chef::Log::Formatter.show_time = true
+
+Ohai::Config[:plugin_path] << '/etc/ohai/plugins'
+CLIENT
+
+<% @files.each do |file|; local = file["local"]; remote = file["remote"] %>
+cat << <%= local.upcase %> > <%= remote %>
+<%= File.open("#@directory/#{local}").read %>
+<%= local.upcase %>
+<% end %>
+
+cat << BOOTCHEF > /root/boot-chef
+#!/bin/bash
+chef-client -N <%= @name %> <%= @environment ? "-E #@environment" : "" %> --once -j /etc/chef/bootstrap.json  && \
+chef-client # run again to update mcollective facts
+BOOTCHEF
+
+chmod 755 /root/boot-chef
+/root/boot-chef

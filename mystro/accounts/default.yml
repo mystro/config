@@ -18,28 +18,36 @@ selectors:
 # only use this if you want to override
 # the connection information that is set
 # in config.yml
-# used when you have multiple cloud accounts
+#
+# this allows for different accounts to talk to different cloud providers
+# the settings below apply to all cloud services for this account
 #connect:
 #  fog:
 #    aws_access_key_id: key
 #    aws_secret_access_key: secret
 #    provider: AWS
 
-compute:
-  # defaults for all computes
-  fog:
-    region: us-east-1
-  flavor: m1.large
-  region: us-east-1
-  groups:
-    - default
-  keypair: default
-  image: ami-0145d268 # make sure this is an image in the region specified to fog.
-  # userdata package to use
-  userdata: chef
-
-balancer:
-  something: true
-
-dns:
-  zone: sub.domain.com
+#compute:
+#  # defaults for all computes
+#  fog:
+#    region: us-east-1
+#    # override cloud configuration for this service in this account
+#    # overriding configuration at the service level, requires that
+#    # all services have cloud configurations.
+#    aws_access_key_id: key
+#    aws_secret_access_key: secret
+#    provider: AWS
+#  flavor: m1.large
+#  region: us-east-1
+#  groups:
+#    - default
+#  keypair: default
+#  image: ami-0145d268 # make sure this is an image in the region specified to fog.
+#  # userdata package to use
+#  userdata: chef
+#
+#balancer:
+#  something: true
+#
+#dns:
+#  zone: sub.domain.com

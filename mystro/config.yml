@@ -24,12 +24,51 @@ logging:
 
 workers: true
 
-# connection defaults
-connect:
+# if you're using the same provider for all of your cloud resources
+# set them here
+#connect:
+#  fog:
+#    provider: AWS
+#    aws_access_key_id: access key
+#    aws_secret_access_key: secret key
+# otherwise, you will need to specify them below in each of the
+# different services
+
+compute:
+  # defaults for all computes
   fog:
-    provider: AWS
-    aws_access_key_id: AKIAXXXXXXXXXXXXXXXX
-    aws_secret_access_key: key hash
+    region: us-east-1
+#    # cloud provider configuration for computes
+#    provider: AWS
+#    aws_access_key_id: access key
+#    aws_secret_access_key: secret key
+
+  flavor: m1.large
+  region: us-east-1
+  groups:
+    - default
+  keypair: rgi-keypair-20120125
+  image: ami-0145d268 # make sure this is an image in the region specified to fog.
+  # userdata package to use
+  userdata: default
+
+balancer:
+  something: true
+
+dns:
+  fog:
+#    provider: AWS
+#    aws_access_key_id: access key
+#    aws_secret_access_key: secret key
+#
+#    provider: DNSMadeEasy
+#    dnsmadeeasy_api_key: api key
+#    dnsmadeeasy_secret_key: secret key
+#
+#    provider: Zerigo
+#    zerigo_email: email
+#    zerigo_token: token
+  zone: subdomain.com
 
 # plugins
 plugins:

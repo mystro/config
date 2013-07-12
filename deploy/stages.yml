@@ -1,0 +1,27 @@
+---
+defaults:
+  variables: &vars
+    :rails_env: production
+    :branch: develop
+  tasks: &tasks
+#    # example usage of tasks
+#    # same as: 'after "deploy:setup", "fooapp:link_data_path"
+#    - type  : after_callback
+#      target: 'deploy:setup'
+#      action: 'fooapp:link_data_path'
+#    # same as: 'before "deploy:restart", "fooapp:run_scripts"
+#    - type  : before_callback
+#      target: 'deploy:restart'
+#      action: 'fooapp:run_scripts'
+
+production:
+  variables: *vars
+  tasks: *tasks
+  roles:
+    app:
+      mystro.domain.com: { :primary: true}
+    web:
+      mystro.domain.com
+    db:
+      mystro.domain.com
+  

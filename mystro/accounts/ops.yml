@@ -49,5 +49,5 @@ selectors:
 #balancer:
 #  something: true
 #
-#dns:
-#  zone: sub.domain.com
+dns:
+  zone: ops.domain.com

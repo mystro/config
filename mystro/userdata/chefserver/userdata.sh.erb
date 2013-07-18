@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e -x
 exec > ~/userdata.log 2>&1
+cd ~
 export DEBIAN_FRONTEND=noninteractive
 <% @repositories.each do |repo| %>
 apt-add-repository -y <%= repo %>
@@ -33,5 +34,9 @@ cat << <%= local.upcase %> > <%= remote %>
 <%= File.open("#@directory/#{local}").read %>
 <%= local.upcase %>
 <% end %>
+
+wget "https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef-server_11.0.8-1.ubuntu.12.04_amd64.deb"
+dpkg -i chef-server_11.0.8-1.ubuntu.12.04_amd64.deb
+chef-server-ctl reconfigure
 
 echo "complete"

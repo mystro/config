@@ -34,4 +34,29 @@ cat << <%= local.upcase %> > <%= remote %>
 <%= local.upcase %>
 <% end %>
 
+# TODO: should be chef
+
+rm -rf /srv
+ln -s /mnt /srv
+mkdir /srv/{apps,sites}
+
+echo "Include /srv/sites/*" >> /etc/apache2/sites-available/001-srv-sites
+a2ensite 001-srv-sites
+a2enmod rewrite
+a2enmod proxy
+a2enmod proxy_http
+a2enmod proxy_balancer
+service apache2 reload
+
+apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
+echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/10gen.list
+apt-get update
+
+# mongodb
+apt-get -y install mongodb-10gen
+
+# redis
+sysctl vm.overcommit_memory=1
+apt-get -y install redis-server
+
 echo "complete"
